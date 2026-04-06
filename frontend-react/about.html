@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About This Project</title>
+    <link rel="stylesheet" href="/about.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <p class="eyebrow">Project Overview</p>
+        <h1>Cloud Resource Allocation Using Reinforcement Learning</h1>
+        <p class="hero-copy">
+          This project studies how cloud scaling decisions can be recommended from historical workload behaviour.
+          It combines reinforcement learning concepts with a practical web stack so users can submit current system
+          signals and receive a scaling recommendation.
+        </p>
+      </header>
+
+      <main class="content-grid">
+        <section class="card">
+          <h2>Problem Statement</h2>
+          <p>
+            Cloud systems need enough compute resources to handle demand, but over-provisioning wastes money and
+            under-provisioning harms performance. The goal of this project is to recommend whether the system should
+            <strong>scale up</strong>, <strong>hold</strong>, or <strong>scale down</strong> based on operational
+            inputs such as CPU, memory, instance count, and request rate.
+          </p>
+          <p>
+            The project focuses on decision support: it helps estimate the next scaling action from workload patterns
+            already learned from historical samples.
+          </p>
+        </section>
+
+        <section class="card">
+          <h2>Policy Used</h2>
+          <p>
+            The learning idea behind the project is <strong>tabular Q-learning</strong>, a reinforcement learning
+            policy that evaluates actions by estimating long-term reward for each state-action pair.
+          </p>
+          <p>
+            During experimentation, the policy learns from workload samples and reward feedback. In the currently
+            deployed system, live requests are answered using the pre-trained sample dataset generated from that RL
+            process, so no new online training is performed when a user submits input.
+          </p>
+        </section>
+
+        <section class="card">
+          <h2>Dataset and Notebook</h2>
+          <p>
+            The workload data used in this project comes from the Kaggle cloud workload dataset below:
+          </p>
+          <p>
+            <a href="https://www.kaggle.com/datasets/akhilbs/cloud-workload" target="_blank" rel="noreferrer">
+              Kaggle Dataset: Cloud Workload
+            </a>
+          </p>
+          <p>
+            The experimentation and model preparation notebook used for this work is:
+          </p>
+          <p>
+            <a href="https://www.kaggle.com/code/arudraviharbommana/cloud-workload-for-rl" target="_blank" rel="noreferrer">
+              Kaggle Notebook: cloud-workload-for-rl
+            </a>
+          </p>
+        </section>
+
+        <section class="card">
+          <h2>Development Stack</h2>
+          <ul>
+            <li><strong>Frontend:</strong> React with Vite</li>
+            <li><strong>Gateway Backend:</strong> Node.js with Express</li>
+            <li><strong>Inference Backend:</strong> Python with FastAPI</li>
+            <li><strong>Data Source:</strong> Preprocessed RL sample dataset in JSON form</li>
+          </ul>
+        </section>
+
+        <section class="card wide">
+          <h2>Theoretical Flow</h2>
+          <ol>
+            <li>Historical workload samples are converted into RL-friendly states.</li>
+            <li>A reward design encourages balanced scaling decisions while penalizing overload and unnecessary cost.</li>
+            <li>Q-learning is used offline to derive useful scaling behaviour from the dataset.</li>
+            <li>The resulting learned samples are stored and reused for live recommendation.</li>
+            <li>At runtime, the system estimates the most suitable action for the user’s current input.</li>
+          </ol>
+        </section>
+
+        <section class="card">
+          <h2>Calibrations Used</h2>
+          <ul>
+            <li><strong>CPU input calibration:</strong> user CPU percentage is scaled against the maximum normalized CPU value found in the trained dataset.</li>
+            <li><strong>Memory input calibration:</strong> user memory percentage is scaled against the maximum normalized memory value found in the trained dataset.</li>
+            <li><strong>Request-rate calibration:</strong> request rate is scaled proportionally against the maximum normalized request-rate value from the dataset.</li>
+            <li><strong>Instance calibration:</strong> instance counts are mapped from the UI range 1 to 3 into the normalized interval 0.0 to 1.0.</li>
+            <li><strong>State matching calibration:</strong> live inputs are not retrained online; they are compared against stored RL samples and matched to the closest learned state.</li>
+          </ul>
+        </section>
+
+        <section class="card">
+          <h2>Core Formulae</h2>
+          <p><strong>Q-learning update:</strong></p>
+          <pre><code>Q(s, a) = Q(s, a) + alpha * [r + gamma * max Q(s', a') - Q(s, a)]</code></pre>
+          <p><strong>CPU normalization:</strong></p>
+          <pre><code>cpu_util = (cpu / 100) * cpu_max</code></pre>
+          <p><strong>Memory normalization:</strong></p>
+          <pre><code>mem_util = (memory / 100) * mem_max</code></pre>
+          <p><strong>Instance normalization:</strong></p>
+          <pre><code>instances_norm = (instances - 1) / 2</code></pre>
+          <p><strong>Request-rate normalization:</strong></p>
+          <pre><code>request_rate_norm = (request_rate / 1000) * req_max</code></pre>
+          <p><strong>Load estimate used in reward design:</strong></p>
+          <pre><code>load = (cpu_util + mem_util) / 2</code></pre>
+          <p><strong>Closest-state lookup during inference:</strong></p>
+          <pre><code>distance = |cpu1 - cpu2| + |mem1 - mem2| + |inst1 - inst2| + |req1 - req2|</code></pre>
+        </section>
+
+        <section class="card wide">
+          <h2>Technical Flow When Input Is Given</h2>
+          <ol>
+            <li>The user enters CPU, memory, running instances, and request rate in the React interface.</li>
+            <li>The React frontend sends the request to the Node.js gateway endpoint.</li>
+            <li>The Node.js gateway forwards that payload to the FastAPI backend.</li>
+            <li>The FastAPI service normalizes the raw input into the same scale used by the trained samples.</li>
+            <li>The backend compares the normalized state to the stored RL dataset and finds the closest matching sample.</li>
+            <li>The action and reward associated with that learned sample are returned to the UI.</li>
+            <li>The frontend presents the recommendation, reward, and debug information to the user.</li>
+          </ol>
+        </section>
+
+        <section class="card wide">
+          <h2>Reward Logic</h2>
+          <p>
+            The reward function is designed to balance service quality and infrastructure cost. Its logic is based on
+            system load, active instance count, and overload penalties.
+          </p>
+          <ul>
+            <li>If <strong>load &gt; 0.75</strong>, <strong>scale_up</strong> gets a positive reward and other actions are penalized.</li>
+            <li>If <strong>load &lt; 0.30</strong>, <strong>scale_down</strong> gets a positive reward and other actions are penalized.</li>
+            <li>If load is in the middle region, <strong>hold</strong> is favored.</li>
+            <li>A cost penalty is applied in proportion to the number of running instances.</li>
+            <li>An additional SLA-style penalty is applied if CPU or memory becomes extremely high.</li>
+          </ul>
+        </section>
+
+        <section class="card wide">
+          <h2>Important Terms</h2>
+          <ul>
+            <li><strong>State:</strong> the current condition of the system represented by CPU, memory, instances, and request rate after normalization.</li>
+            <li><strong>Action:</strong> the scaling decision chosen by the policy: scale up, hold, or scale down.</li>
+            <li><strong>Reward:</strong> a numerical score used to measure whether an action was beneficial for a state.</li>
+            <li><strong>Policy:</strong> the rule used to decide which action should be selected in a given state.</li>
+            <li><strong>Q-value:</strong> the estimated long-term usefulness of taking a particular action in a particular state.</li>
+            <li><strong>Episode:</strong> one complete pass over the training dataset during RL training.</li>
+            <li><strong>Alpha:</strong> learning rate controlling how strongly new information updates old Q-values.</li>
+            <li><strong>Gamma:</strong> discount factor controlling how much future reward matters.</li>
+            <li><strong>Epsilon:</strong> exploration parameter in epsilon-greedy learning; larger values promote experimentation, lower values promote exploitation.</li>
+            <li><strong>Normalization:</strong> rescaling user input into the numeric space used by the trained data.</li>
+            <li><strong>Inference:</strong> the deployed decision phase where the system recommends an action for a new input.</li>
+            <li><strong>Closest sample matching:</strong> comparing a live normalized state to stored learned samples and using the nearest one as the recommendation source.</li>
+          </ul>
+        </section>
+
+        <section class="card wide">
+          <h2>Why This Design Works</h2>
+          <p>
+            This approach keeps the deployed system simple and stable. Instead of retraining on every request, it uses
+            knowledge derived from pre-trained workload behaviour. That makes the recommendation flow fast, repeatable,
+            and easier to demonstrate.
+          </p>
+          <p>
+            It also clearly separates the stages of the project: offline RL experimentation and online inference.
+          </p>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

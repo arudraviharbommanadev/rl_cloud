@@ -1,0 +1,147 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@500;700;800&display=swap");
+
+:root {
+  --bg: #f4f6f8;
+  --surface: rgba(255, 255, 255, 0.9);
+  --line: #c6d1de;
+  --text: #152334;
+  --text-soft: #425568;
+  --brand: #05668d;
+  --accent: #f39c12;
+  --shadow: 0 20px 45px rgba(13, 38, 59, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Manrope", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 12% 20%, #b8e0d2 0, #f4f6f8 36%),
+    radial-gradient(circle at 90% 0%, #f7d794 0, #f4f6f8 28%),
+    linear-gradient(180deg, #f8f9fb 0%, #edf1f6 100%);
+}
+
+.page-shell {
+  width: min(1180px, 92vw);
+  margin: 0 auto;
+  padding: 2.5rem 0 3rem;
+}
+
+.hero {
+  background: linear-gradient(145deg, rgba(21, 35, 52, 0.96), rgba(5, 102, 141, 0.95));
+  color: #fff;
+  padding: 2rem;
+  border-radius: 1.4rem;
+  box-shadow: var(--shadow);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #f9cc7b;
+}
+
+.hero h1 {
+  margin: 0.8rem 0 0.4rem;
+  font-family: "Sora", sans-serif;
+  line-height: 1.15;
+}
+
+.hero-copy {
+  margin: 0;
+  max-width: 760px;
+  color: #d8edf8;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 1.1rem 1.15rem;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+}
+
+.card.wide {
+  grid-column: 1 / -1;
+}
+
+.card h2 {
+  margin: 0 0 0.75rem;
+  font-family: "Sora", sans-serif;
+  font-size: 1.05rem;
+}
+
+.card p,
+.card li {
+  color: var(--text-soft);
+  line-height: 1.65;
+}
+
+.card p {
+  margin: 0.55rem 0 0;
+}
+
+.card ul,
+.card ol {
+  margin: 0.4rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.card a {
+  color: var(--brand);
+  font-weight: 700;
+  text-decoration-thickness: 1.5px;
+}
+
+.card pre {
+  margin: 0.55rem 0 0;
+  padding: 0.75rem 0.85rem;
+  border: 1px dashed #c6d1de;
+  border-radius: 0.7rem;
+  background: #f7fafc;
+  overflow-x: auto;
+}
+
+.card code {
+  font-family: "Courier New", monospace;
+  font-size: 0.9rem;
+  color: #23445d;
+}
+
+strong {
+  color: var(--text);
+}
+
+@media (max-width: 760px) {
+  .page-shell {
+    width: min(1180px, 94vw);
+    padding-top: 1.3rem;
+  }
+
+  .hero {
+    padding: 1.35rem;
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card.wide {
+    grid-column: auto;
+  }
+}

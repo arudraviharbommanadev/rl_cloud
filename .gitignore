@@ -1,0 +1,6 @@
+backend-node/node_modules/
+frontend-react/node_modules/
+frontend-react/dist/
+rl-fastapi/__pycache__/
+*.pyc
+.DS_Store

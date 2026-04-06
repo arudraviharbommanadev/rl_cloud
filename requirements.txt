@@ -1,0 +1,23 @@
+# Consolidated dependency inventory for this repository.
+# Python packages below can be installed with:
+#   pip install -r requirements.txt
+#
+# Node/React packages are documented here for one-file visibility, but they
+# should still be installed from their respective package.json files:
+#   cd backend-node && npm install
+#   cd frontend-react && npm install
+
+# Python backend: rl-fastapi
+fastapi
+pydantic
+uvicorn
+
+# Node backend: backend-node
+# axios@1.13.6
+# express@5.2.1
+
+# React frontend: frontend-react
+# react@18.3.1
+# react-dom@18.3.1
+# @vitejs/plugin-react@4.7.0
+# vite@7.3.1
